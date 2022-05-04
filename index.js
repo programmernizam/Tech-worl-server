@@ -15,12 +15,28 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
-client.connect((err) => {
-  const collection = client.db("express").collection("user");
-  // perform actions on the collection object
-  console.log("db connect");
-  client.close();
-});
+async function run(){
+  try{
+    await client.connect();
+    const itemCollection = client.db("techWorld").collection("items");
+    app.get('/items', async(req, res)=>{
+      const query = {};
+      const cursor =  itemCollection.find(query);
+      const items = await cursor.toArray();
+      res.send(items);
+    })
+
+    app.post('/items', async(req, res)=>{
+      const newItem = req.body;
+      const result = itemCollection.insertOne(newItem);
+    })
+  }
+  finally{
+
+  }
+}
+
+run().catch(console.dir)
 
 app.get("/", (req, res) => {
   res.send("Hello World");
