@@ -29,6 +29,7 @@ async function run(){
     app.post('/items', async(req, res)=>{
       const newItem = req.body;
       const result = itemCollection.insertOne(newItem);
+      res.send(result);n
     })
   }
   finally{
