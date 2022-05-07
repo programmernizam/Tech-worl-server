@@ -25,6 +25,12 @@ async function run(){
       const items = await cursor.toArray();
       res.send(items);
     })
+    app.get("/items/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const item = await itemCollection.findOne(query);
+      res.send(item);
+    });
 
     app.post('/items', async(req, res)=>{
       const newItem = req.body;
