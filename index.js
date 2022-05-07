@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
 // MiddleWare
@@ -31,6 +31,14 @@ async function run(){
       const result = itemCollection.insertOne(newItem);
       res.send(result);n
     })
+
+    // Delete Items
+    app.delete("/items/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await itemCollection.deleteOne(query);
+      res.send(result);
+    });
   }
   finally{
 
