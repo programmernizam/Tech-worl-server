@@ -19,13 +19,6 @@ async function run() {
   try {
     await client.connect();
     const itemCollection = client.db("techWorld").collection("items");
-    app.get("/myItems", async (req, res) => {
-      const email = req.query.email;
-      const query = {email: email};
-      const cursor = itemCollection.find(query);
-      const items = await cursor.toArray();
-      res.send(items);
-    });
     app.get("/items", async (req, res) => {
       const query = {};
       const cursor = itemCollection.find(query);
@@ -44,11 +37,6 @@ async function run() {
     });
 
     app.post("/items", async (req, res) => {
-      const newItem = req.body;
-      const result = itemCollection.insertOne(newItem);
-      res.send(result);
-    });
-    app.post("/myItems", async (req, res) => {
       const newItem = req.body;
       const result = itemCollection.insertOne(newItem);
       res.send(result);
