@@ -48,6 +48,11 @@ async function run() {
       const result = itemCollection.insertOne(newItem);
       res.send(result);
     });
+    app.post("/myItems", async (req, res) => {
+      const newItem = req.body;
+      const result = itemCollection.insertOne(newItem);
+      res.send(result);
+    });
 
     app.put("/items/:id", async (req, res) => {
       const id = req.params.id;
