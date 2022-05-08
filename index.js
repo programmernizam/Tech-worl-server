@@ -19,7 +19,7 @@ async function run() {
   try {
     await client.connect();
     const itemCollection = client.db("techWorld").collection("items");
-    app.get("/myItems", async (req, res) => {
+    app.get("/items", async (req, res) => {
       const email = req.query.email;
       const query = {email: email};
       const cursor = itemCollection.find(query);
