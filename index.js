@@ -15,28 +15,46 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
-async function run(){
-  try{
+async function run() {
+  try {
     await client.connect();
     const itemCollection = client.db("techWorld").collection("items");
-    app.get('/items', async(req, res)=>{
+    app.get("/items", async (req, res) => {
       const query = {};
-      const cursor =  itemCollection.find(query);
+      const cursor = itemCollection.find(query);
       const items = await cursor.toArray();
       res.send(items);
-    })
+    });
     app.get("/items/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const item = await itemCollection.findOne(query);
-      res.send(item);
+      if (item) {
+        res.send(item);
+      } else {
+        res.send("Record Not Found");
+      }
     });
 
-    app.post('/items', async(req, res)=>{
+    app.post("/items", async (req, res) => {
       const newItem = req.body;
       const result = itemCollection.insertOne(newItem);
-      res.send(result);n
-    })
+      res.send(result);
+    });
+
+    app.put("/items/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateItem = req.body;
+      const filter = {_id: ObjectId(id)};
+      const option = {upsert: true};
+      const updateDoc = {
+        $set:{
+          quantity : updateItem.updateQuantity
+        }
+      }
+      const result = await itemCollection.updateOne(filter, updateDoc, option)
+      res.send(result)
+    });
 
     // Delete Items
     app.delete("/items/:id", async (req, res) => {
@@ -45,13 +63,11 @@ async function run(){
       const result = await itemCollection.deleteOne(query);
       res.send(result);
     });
-  }
-  finally{
-
+  } finally {
   }
 }
 
-run().catch(console.dir)
+run().catch(console.dir);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
